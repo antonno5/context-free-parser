@@ -13,6 +13,8 @@ private:
 
     void inputRules(int countRules);
 
+    void clear();
+
 public:
     std::unordered_set<char> nonTerminals;
     std::unordered_set<char> terminals;

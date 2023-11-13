@@ -35,6 +35,7 @@ void Grammar::inputSymbols(int countSymbols, std::unordered_set<char>& setSymbol
 }
 
 void Grammar::scan() {
+    clear();
     int countNonTerminals, countTerminals, countRules;
     std::cin >> countNonTerminals >> countTerminals >> countRules;
 
@@ -56,4 +57,10 @@ bool Grammar::isTerminal(char symbol) {
 
 bool Grammar::isNonTerminal(char symbol) {
     return nonTerminals.find(symbol) != terminals.end();
+}
+
+void Grammar::clear() {
+    nonTerminals.clear();
+    terminals.clear();
+    rules.clear();
 }

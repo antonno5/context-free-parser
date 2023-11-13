@@ -22,7 +22,9 @@ enable_testing()
 
 add_executable(
         parser_test
-        src/tests.cpp
+        src/tests/tests.cpp
+        src/grammar.h src/grammar.cpp
+        src/Earley.h src/Earley.cpp
 )
 
 target_link_libraries(
