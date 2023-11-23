@@ -17,13 +17,13 @@ private:
                 , nonTerminal(NonTerminal) {}
 
         bool operator<(const Situation& that) const {
-            return std::make_tuple(cursor, i, string) <
-                   std::make_tuple(that.cursor, that.i, that.string);
+            return std::make_tuple(string, cursor, i, nonTerminal) <
+                   std::make_tuple(that.string, that.cursor, that.i, that.nonTerminal);
         }
 
         bool operator==(const Situation& that) const {
-            return std::make_tuple(cursor, i, string) ==
-                   std::make_tuple(that.cursor, that.i, that.string);
+            return std::make_tuple(string, cursor, i, nonTerminal) ==
+                   std::make_tuple(that.string, that.cursor, that.i, that.nonTerminal);
         }
     };
 
@@ -31,12 +31,11 @@ private:
         size_t operator()(const Situation& situation) const {
             size_t numbers[4] = {(size_t)situation.string, (size_t)situation.cursor
                     , (size_t)situation.i, (size_t)situation.nonTerminal};
-            size_t hash = 0;
             std::size_t seed = 1023;
             for(auto& i : numbers) {
                 seed ^= i + 0x9e3779b9 + (seed << 6) + (seed >> 2);
             }
-            return hash;
+            return seed;
         }
     };
 
