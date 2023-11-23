@@ -9,9 +9,9 @@
 
 class Grammar {
 private:
-    static void inputSymbols(int countSymbols, std::unordered_set<char>& setSymbols);
+    static void inputSymbols(int countSymbols, std::unordered_set<char>& setSymbols, std::istream& stream = std::cin);
 
-    void inputRules(int countRules);
+    void inputRules(int countRules, std::istream& stream = std::cin);
 
     void clear();
 
@@ -25,5 +25,5 @@ public:
 
     bool isNonTerminal(char symbol);
 
-    void scan();
+    void scan(std::istream& stream = std::cin);
 };

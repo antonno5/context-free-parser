@@ -1,9 +1,9 @@
 #include "grammar.h"
 
-void Grammar::inputRules(int countRules) {
+void Grammar::inputRules(int countRules, std::istream& stream) {
     for (int i = 0; i < countRules; ++i) {
         std::string line;
-        std::cin >> line;
+        stream >> line;
 
         std::string delimiter = "->";
         if (line.find(delimiter) == std::string::npos) {
@@ -26,26 +26,27 @@ void Grammar::inputRules(int countRules) {
     }
 }
 
-void Grammar::inputSymbols(int countSymbols, std::unordered_set<char>& setSymbols) {
+void Grammar::inputSymbols(int countSymbols, std::unordered_set<char>& setSymbols, std::istream& stream) {
     for (int i = 0; i < countSymbols; ++i) {
         char symbol;
-        std::cin >> symbol;
+        stream >> symbol;
         setSymbols.insert(symbol);
     }
 }
 
-void Grammar::scan() {
+void Grammar::scan(std::istream& stream) {
     clear();
     int countNonTerminals, countTerminals, countRules;
-    std::cin >> countNonTerminals >> countTerminals >> countRules;
+    stream >> countNonTerminals >> countTerminals >> countRules;
 
-    inputSymbols(countNonTerminals, nonTerminals);
+    inputSymbols(countNonTerminals, nonTerminals, stream);
 
-    inputSymbols(countTerminals, terminals);
+    inputSymbols(countTerminals, terminals, stream);
 
-    inputRules(countTerminals);
+    inputRules(countTerminals, stream);
 
-    std::cin >> startingSymbol;
+    stream >> startingSymbol;
+    
     if (!isNonTerminal(startingSymbol)) {
         throw std::runtime_error("Starting symbol should be non-terminal");
     }

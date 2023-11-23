@@ -3,7 +3,7 @@
 #include "../Earley.h"
 
 struct inputGrammar {
-    std::string buffer;
+    std::string stream;
     char startingSymbol;
     std::unordered_set<char> nonTerminals;
     std::unordered_set<char> terminals;
@@ -28,15 +28,12 @@ inputGrammar testingInputs[countGrammars] = {
 };
 
 TEST(GrammarTests, Scan) {
-    std::stringstream buffer;
-    std::streambuf *sBuffer = std::cin.rdbuf();
+    std::stringstream stream;
 
-    auto testInput = [](const inputGrammar& input, std::stringstream& buffer){
-        buffer.clear();
-        buffer << input.buffer;
-        std::cin.rdbuf(buffer.rdbuf());
+    auto testInput = [](const inputGrammar& input, std::stringstream& stream){
+        stream << input.stream;
         Grammar grammar;
-        EXPECT_NO_THROW(grammar.scan());
+        EXPECT_NO_THROW(grammar.scan(stream));
         EXPECT_EQ(grammar.startingSymbol, input.startingSymbol);
         EXPECT_EQ(grammar.terminals, input.terminals);
         EXPECT_EQ(grammar.nonTerminals, input.nonTerminals);
@@ -44,14 +41,12 @@ TEST(GrammarTests, Scan) {
     };
 
     for (const auto & testingInput : testingInputs) {
-        testInput(testingInput, buffer);
-    }
-
-    std::cin.rdbuf(sBuffer);
+        testInput(testingInput, stream);
+    }   
 }
 
 TEST(GrammarTests, ScanExceptions) {
-    std::stringstream buffer;
+    std::stringstream stream;
     std::streambuf *sBuffer = std::cin.rdbuf();
 
     std::string buffers[5] = {"1 2 2\nS\nab\nS->aScS\nS->\nS"
@@ -60,16 +55,14 @@ TEST(GrammarTests, ScanExceptions) {
     , "1 2 2\nS\nab\nS->aSbS\nS->B\nS"
     , "1 2 2\nS\nab\nS->aSbS\nS->(\nS"};
 
-    auto testException = [](const std::string& input, std::stringstream& buffer){
-        buffer.clear();
-        buffer << input;
-        std::cin.rdbuf(buffer.rdbuf());
+    auto testException = [](const std::string& input, std::stringstream& stream){
+        stream << input;
         Grammar grammar;
-        EXPECT_THROW(grammar.scan(), std::runtime_error);
+        EXPECT_THROW(grammar.scan(stream), std::runtime_error);
     };
 
     for (const auto & i : buffers) {
-        testException(i, buffer);
+        testException(i, stream);
     }
 
     std::cin.rdbuf(sBuffer);
@@ -79,27 +72,21 @@ TEST(EarleyTests, Tests) {
     std::vector<std::string> stringsInGrammar[countGrammars];
     std::vector<std::string> stringsOutGrammar[countGrammars];
 
-    stringsInGrammar[0] = {"aababb", "aabb", ""};
+    stringsInGrammar[0] = std::vector<std::string>({"aababb", "aabb", ""});
+    stringsOutGrammar[0] = std::vector<std::string>({"aabbba"});
 
-    stringsOutGrammar[0] = {"aabbba"};
+    stringsInGrammar[2] = std::vector<std::string>({"", "ab", "aaaaaabbbbbb"});
+    stringsOutGrammar[2] = std::vector<std::string>({"a", "aaaa", "c", "aab", "bbb", "9()9"});
 
-    stringsInGrammar[2] = {"", "ab", "aaaaaabbbbbb"};
-
-    stringsOutGrammar[2] = {"a", "aaaa", "c", "aab", "bbb", "9()9"};
-
-    stringsInGrammar[3] = {"zzz", "azzzb", "aazzzbb", "aaczzzbb", "czzz", "addddkkzzzb"};
-
-    stringsOutGrammar[3] = {"", "a", "aaaczzzbb", "c"};
+    stringsInGrammar[3] = std::vector<std::string>({"zzz", "azzzb", "aazzzbb", "aaczzzbb", "czzz", "addddkkzzzb"});
+    stringsOutGrammar[3] = std::vector<std::string>({"", "a", "aaaczzzbb", "c"});
 
     for (int i = 0; i < countGrammars; ++i) {
-        std::stringstream buffer;
-        std::streambuf *sBuffer = std::cin.rdbuf();
-        buffer.clear();
-        buffer << testingInputs[i].buffer;
-        std::cin.rdbuf(buffer.rdbuf());
+        std::stringstream stream;
+        stream << testingInputs[i].stream;
 
         Grammar grammar;
-        grammar.scan();
+        grammar.scan(stream);
 
         Earley algo;
         algo.fit(grammar);
