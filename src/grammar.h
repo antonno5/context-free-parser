@@ -2,10 +2,11 @@
 
 #include <iostream>
 #include <unordered_set>
-#include <string>
+#include <string.h>
 #include <unordered_map>
 #include <list>
 #include <utility>
+#include <sstream>
 
 class Grammar {
 private:

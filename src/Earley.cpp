@@ -2,9 +2,9 @@
 
 void Earley::fit(Grammar otherGrammar) {
     grammar = std::move(otherGrammar);
-    grammar.nonTerminals.insert('s');
-    grammar.rules['s'].push_back(std::string(1, grammar.startingSymbol));
-    grammar.startingSymbol = 's';
+    grammar.nonTerminals.insert('&');
+    grammar.rules['&'].push_back(std::string(1, grammar.startingSymbol));
+    grammar.startingSymbol = '&';
 }
 
 bool Earley::predict(const std::string& string) {

@@ -43,7 +43,7 @@ void Grammar::scan(std::istream& stream) {
 
     inputSymbols(countTerminals, terminals, stream);
 
-    inputRules(countTerminals, stream);
+    inputRules(countRules, stream);
 
     stream >> startingSymbol;
     

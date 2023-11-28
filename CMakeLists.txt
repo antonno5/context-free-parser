@@ -15,16 +15,16 @@ FetchContent_MakeAvailable(googletest)
 add_executable(context_free_parser
         src/main.cpp
         src/grammar.h src/grammar.cpp
-        src/Earley.h src/Earley.cpp)
+        src/Earley.h src/Earley.cpp
+        src/LR1.h src/LR1.cpp)
 
 enable_testing()
 
-add_executable(
-        parser_test
+add_executable(parser_test
         src/tests/tests.cpp
         src/grammar.h src/grammar.cpp
         src/Earley.h src/Earley.cpp
-)
+        src/LR1.h src/LR1.cpp)
 
 target_link_libraries(
         parser_test
