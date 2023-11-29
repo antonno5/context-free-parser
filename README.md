@@ -28,4 +28,4 @@ To launch unit tests:
 
 ## Other
 
-There are examples in ```/examples```. Unit tests presented in ```/src/tests.cpp```
+There are examples in ```/examples```. Unit tests is presented in ```/src/tests.cpp```
