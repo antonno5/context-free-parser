@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "../grammar.h"
 #include "../Earley.h"
+#include "../LR1.h"
 
 struct inputGrammar {
     std::string stream;
@@ -47,7 +48,6 @@ TEST(GrammarTests, Scan) {
 
 TEST(GrammarTests, ScanExceptions) {
     std::stringstream stream;
-    std::streambuf *sBuffer = std::cin.rdbuf();
 
     std::string buffers[5] = {"1 2 2\nS\nab\nS->aScS\nS->\nS"
     , "1 2 2\nS\nab\nS->aSbS\nS->\nB"
@@ -64,8 +64,6 @@ TEST(GrammarTests, ScanExceptions) {
     for (const auto & i : buffers) {
         testException(i, stream);
     }
-
-    std::cin.rdbuf(sBuffer);
 }
 
 TEST(EarleyTests, Tests) {
@@ -89,6 +87,55 @@ TEST(EarleyTests, Tests) {
         grammar.scan(stream);
 
         Earley algo;
+        algo.fit(grammar);
+
+        for (const auto& string : stringsInGrammar[i]) {
+            EXPECT_EQ(true, algo.predict(string));
+        }
+
+        for (const auto& string : stringsOutGrammar[i]) {
+            EXPECT_EQ(false, algo.predict(string));
+        }
+    }
+}
+
+TEST(LR1Tests, ExceptionTests) {
+    std::string buffers[3] = {"2 1 2\nSD\na\nS->aaD\nD->D\nS"
+        , "4 3 7\nSDGH\nabc\nS->DG\nD->abD\nD->G\nG->bGH\nG->c\nH->bH\nH->\nS"
+        , "3 1 4\nSAB\na\nS->Aa\nS->Ba\nA->\nB->\nS"};
+
+    for (int i = 0; i < 3; ++i) {
+        std::stringstream stream;
+        stream << buffers[i];
+        Grammar grammar;
+        grammar.scan(stream);
+
+        LR1 parser;
+        EXPECT_THROW(parser.fit(grammar), std::runtime_error);
+    }
+}
+
+TEST(LR1Tests, Tests) {
+    std::vector<std::string> stringsInGrammar[countGrammars];
+    std::vector<std::string> stringsOutGrammar[countGrammars];
+
+    stringsInGrammar[0] = std::vector<std::string>({"aababb", "aabb", ""});
+    stringsOutGrammar[0] = std::vector<std::string>({"aabbba"});
+
+    stringsInGrammar[2] = std::vector<std::string>({"", "ab", "aaaaaabbbbbb"});
+    stringsOutGrammar[2] = std::vector<std::string>({"a", "aaaa", "c", "aab", "bbb", "9()9"});
+
+    stringsInGrammar[3] = std::vector<std::string>({"zzz", "azzzb", "aazzzbb", "aaczzzbb", "czzz", "addddkkzzzb"});
+    stringsOutGrammar[3] = std::vector<std::string>({"", "a", "aaaczzzbb", "c"});
+
+    for (int i = 0; i < countGrammars; ++i) {
+        std::stringstream stream;
+        stream << testingInputs[i].stream;
+
+        Grammar grammar;
+        grammar.scan(stream);
+
+        LR1 algo;
         algo.fit(grammar);
 
         for (const auto& string : stringsInGrammar[i]) {
