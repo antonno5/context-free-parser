@@ -2,6 +2,7 @@
 
 #include "parser.h"
 #include <vector>
+#include <map>
 
 class LR1 : public Parser {
 private:
@@ -22,6 +23,12 @@ private:
         bool operator==(const Situation& that) const {
             return std::make_tuple(string, cursor, nonTerminal, terminal) ==
                    std::make_tuple(that.string, that.cursor, that.nonTerminal, that.terminal);
+        }
+
+        friend std::ostream& operator<<(std::ostream& out, const Situation& situation) {
+            auto string = *situation.string;
+            string.insert(situation.cursor, ".");
+            return out << situation.nonTerminal << "->" << string << " " << situation.terminal;
         }
     };
 
@@ -47,19 +54,25 @@ private:
         }
     };
 
-    std::unordered_map<char, std::unordered_set<char>> first;
+    std::vector<std::unordered_map<char, std::pair<char, int>>> LRtable;
 
-    std::vector<std::vector<int>> automat;
+    std::unordered_map<Situation, int, HashSituation> number;
 
-    void calcFirst();
+    void calcFirst(std::unordered_map<char, std::unordered_set<char>>&);
 
-    void closure(const std::vector<Situation>&, std::vector<Situation>&);
+    void closure(const std::vector<Situation>&, std::vector<Situation>&, std::unordered_map<char, std::unordered_set<char>>&);
 
-    void go(const std::vector<Situation>&, char, std::vector<Situation>&);
+    void go(const std::vector<Situation>&, char, std::vector<Situation>&, std::unordered_map<char, std::unordered_set<char>>&);
 
-    void calcC(std::vector<std::vector<Situation>>&);
+    void calcC(std::vector<std::vector<Situation>>&, std::unordered_map<char, std::unordered_set<char>>&);
 
-    std::unordered_set<char> getFirst(const std::string&);
+    std::unordered_set<char> getFirst(const std::string&, std::unordered_map<char, std::unordered_set<char>>&);
+
+    void addCell(int, char, std::pair<char, int>);
+
+    int getRuleNumber(const Situation&);
+
+    std::pair<char, std::string*> getRule(int);
 
 public:
     void fit(Grammar) final;

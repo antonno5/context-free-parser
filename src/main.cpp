@@ -1,7 +1,6 @@
 #include "grammar.h"
 #include "Earley.h"
 #include "LR1.h"
-#include "fstream"
 
 int main(int argc, char* argv[]) {   
     Parser *algo = nullptr;
@@ -21,7 +20,7 @@ int main(int argc, char* argv[]) {
         }
     }
     else {
-        algo = new Earley;
+        algo = new LR1;
     }
 
     std::ifstream stream("../input.in");

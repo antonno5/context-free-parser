@@ -7,7 +7,7 @@ void Grammar::inputRules(int countRules, std::istream& stream) {
 
         std::string delimiter = "->";
         if (line.find(delimiter) == std::string::npos) {
-            throw std::runtime_error("Invalid rule without delimiter");
+            throw std::runtime_error("Invalid rule without delimiter: " + line);
         }
 
         auto nonTerminal = line.substr(0, line.find(delimiter));

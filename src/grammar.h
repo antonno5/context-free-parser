@@ -7,6 +7,7 @@
 #include <list>
 #include <utility>
 #include <sstream>
+#include <fstream>
 
 class Grammar {
 private:

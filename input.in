@@ -1,9 +1,12 @@
-1 2 2
+1 3 2
 S
-ab
+gor
 S->
-S->aSbS
+S->gSor
 S
-2
-aababb
-aabbba
+5
+g
+gor
+gggororor
+gg
+goror
