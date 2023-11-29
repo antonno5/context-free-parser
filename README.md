@@ -1,6 +1,6 @@
 # Context free parser
 
-For all parsers input.in is used to input the test.
+For all parsers input.in is used to input the test
 
 ## Parser for LR(1) grammar
 
