@@ -29,3 +29,7 @@ To launch unit tests:
 ## Other
 
 There are examples in ```/examples```. Unit tests is presented in ```/src/tests.cpp```
+
+## Grammar input
+
+To understand how to write grammar and tests, check the examples
