@@ -1,0 +1,15 @@
+#!/bin/bash
+
+mkdir -p build
+cd build
+
+cmake .. > /dev/null
+make > /dev/null
+
+if [[ $1 == "T" ]]; then
+	./parser_test
+elif [[ $1 == "L" ]]; then
+	./context_free_parser -A LR1
+else
+	./context_free_parser -A Earley
+fi
